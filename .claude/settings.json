@@ -1,0 +1,121 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(composer create-project *)",
+      "Bash(composer require *)",
+      "Bash(curl -sS -o /dev/null -w \"HTTP %{http_code}\\\\n\" http://localhost:8088)",
+      "Bash(curl -sS http://localhost:8088)",
+      "Bash(composer show *)",
+      "Bash(composer update *)",
+      "WebFetch(domain:api.github.com)",
+      "Bash(curl -sS \"https://api.github.com/repos/laravel/laravel/compare/12.x...13.x?per_page=100\")",
+      "Bash(python3 -c \"import sys, json; d=json.load\\(sys.stdin\\); [print\\(f.get\\('status','?'\\), f.get\\('filename','?'\\)\\) for f in d.get\\('files',[]\\)]\")",
+      "Bash(curl -sS \"https://api.github.com/repos/laravel/laravel/compare/12.x...13.x?per_page=100\" -o D:/tmp/skeleton_diff.json)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(curl -sS -o D:/tmp/welcome_response.html -w \"HTTP %{http_code}\\\\n\" http://localhost:8088)",
+      "Bash(curl -sS -o /dev/null -w \"App HTTP %{http_code}\\\\n\" http://localhost:8088)",
+      "Bash(Get-ChildItem -Path \"d:\\\\SourceCode\\\\Laravel_Test\\\\Test_laravel13_1\" -Directory)",
+      "Bash(Select-Object Name)",
+      "Bash(curl -sS -X POST http://localhost:8088/api/auth/login -H \"Content-Type: application/json\" -d '{\"email\":\"demo@example.com\",\"password\":\"password\"}')",
+      "Bash(curl -sS -o /tmp/wrong.json -w \"HTTP %{http_code}\\\\n\" -X POST http://localhost:8088/api/auth/login -H \"Content-Type: application/json\" -d '{\"email\":\"demo@example.com\",\"password\":\"wrong\"}')",
+      "Bash(curl -sS -o /dev/null -w \"HTTP %{http_code}\\\\n\" -X POST http://localhost:8088/api/auth/login -H \"Content-Type: application/json\" -d '{}')",
+      "Bash(curl -sS -o /tmp/v.json -w \"HTTP %{http_code}\\\\n\" -X POST http://localhost:8088/api/auth/login -H \"Content-Type: application/json\" -d '{}')",
+      "Bash(gh repo *)",
+      "WebFetch(domain:github.com)"
+    ]
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"C:/Program Files/nodejs/node.exe\" \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/gsd-check-update.js"
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/gsd-session-state.sh"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Bash|Edit|Write|MultiEdit|Agent|Task",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"C:/Program Files/nodejs/node.exe\" \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/gsd-context-monitor.js",
+            "timeout": 10
+          }
+        ]
+      },
+      {
+        "matcher": "Read",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"C:/Program Files/nodejs/node.exe\" \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/gsd-read-injection-scanner.js",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/gsd-phase-boundary.sh",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"C:/Program Files/nodejs/node.exe\" \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/gsd-prompt-guard.js",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"C:/Program Files/nodejs/node.exe\" \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/gsd-read-guard.js",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"C:/Program Files/nodejs/node.exe\" \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/gsd-workflow-guard.js",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/gsd-validate-commit.sh",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,13 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Exceptions\Payment;
+
+use App\Exceptions\HttpDomainException;
+use Symfony\Component\HttpFoundation\Response;
+
+class PaymentException extends HttpDomainException
+{
+    protected int $httpStatus = Response::HTTP_UNPROCESSABLE_ENTITY;
+}
