@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-use App\Exceptions\HttpDomainException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
+use Modules\Core\Exceptions\HttpDomainException;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -16,11 +16,13 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        // Để default cho web/api middleware groups được Laravel khởi tạo (xem framework MiddlewareTrait::use/web/api).
-        // KHÔNG xoá closure này: Laravel chỉ apply default middleware khi withMiddleware() được gọi.
+        // Webhook gateway gọi vào không có CSRF token — exclude khỏi VerifyCsrfToken middleware.
+        $middleware->validateCsrfTokens(except: [
+            'api/payments/webhooks/*',
+        ]);
 
         // API request không có route 'login' → trả null để Authenticate middleware throw AuthenticationException
-        // (sẽ được render thành JSON 401 bởi shouldRenderJsonWhen ở dưới) thay vì cố redirect đến route 'login'.
+        // (sẽ được render thành JSON 401). Web request → redirect đến /login.
         $middleware->redirectGuestsTo(fn (Request $request): ?string => $request->is('api/*') ? null : '/login');
     })
     ->withExceptions(function (Exceptions $exceptions): void {
