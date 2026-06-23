@@ -21,7 +21,9 @@ final class LogoutActionTest extends TestCase
 
         $this->assertDatabaseCount('personal_access_tokens', 1);
 
-        (new LogoutAction)->handle($user);
+        // Action uỷ quyền cho AuthService → resolve qua container.
+        $action = $this->app->make(LogoutAction::class);
+        $action->handle($user);
 
         $this->assertDatabaseCount('personal_access_tokens', 0);
     }

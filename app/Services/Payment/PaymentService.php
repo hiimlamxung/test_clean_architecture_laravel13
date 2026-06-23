@@ -6,6 +6,7 @@ namespace App\Services\Payment;
 
 use App\Contracts\Repositories\OrderRepository;
 use App\Contracts\Repositories\PaymentRepository;
+use App\DTO\Payment\CreatePaymentData;
 use App\DTO\Payment\InitiatePaymentData;
 use App\Enums\OrderStatus;
 use App\Enums\PaymentMethod;
@@ -35,19 +36,19 @@ final readonly class PaymentService
 
         $result = $this->gatewayManager->for($method)->initiate($data);
 
-        return $this->payments->create([
-            'order_id' => $order->id,
-            'method' => $method,
-            'status' => PaymentStatus::Processing,
-            'amount' => $order->total,
-            'currency' => $order->currency,
-            'gateway_reference' => $result->gatewayReference,
-            'gateway_payload' => [
+        return $this->payments->create(new CreatePaymentData(
+            orderId: $order->id,
+            method: $method,
+            status: PaymentStatus::Processing,
+            amount: (string) $order->total,
+            currency: $order->currency,
+            gatewayReference: $result->gatewayReference,
+            gatewayPayload: [
                 'initiation' => $result->rawPayload,
                 'redirect_url' => $result->redirectUrl,
                 'qr_data' => $result->qrData,
             ],
-        ]);
+        ));
     }
 
     public function verify(Payment $payment): Payment

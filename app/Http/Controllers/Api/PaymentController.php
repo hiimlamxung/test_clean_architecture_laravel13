@@ -7,13 +7,13 @@ namespace App\Http\Controllers\Api;
 use App\Actions\Payment\HandlePaymentWebhookAction;
 use App\Actions\Payment\InitiatePaymentAction;
 use App\Actions\Payment\VerifyPaymentAction;
-use App\Contracts\Repositories\OrderRepository;
 use App\Enums\PaymentMethod;
 use App\Exceptions\Payment\PaymentMethodNotSupportedException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\InitiatePaymentRequest;
 use App\Http\Resources\PaymentResource;
 use App\Models\Payment;
+use App\Services\Order\OrderService;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Http\JsonResponse;
@@ -29,9 +29,9 @@ final class PaymentController extends Controller
     public function initiate(
         InitiatePaymentRequest $request,
         InitiatePaymentAction $action,
-        OrderRepository $orders,
+        OrderService $orders,
     ): PaymentResource {
-        $order = $request->order($orders);
+        $order = $orders->findOrFail($request->orderId());
         $this->gate->authorize('pay', $order);
 
         $payment = $action->handle($order, $request->method());

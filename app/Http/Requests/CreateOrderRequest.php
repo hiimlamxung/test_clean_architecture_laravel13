@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Http\Requests;
 
 use App\DTO\Order\CreateOrderData;
-use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 
 final class CreateOrderRequest extends FormRequest
@@ -28,11 +27,8 @@ final class CreateOrderRequest extends FormRequest
 
     public function toData(): CreateOrderData
     {
-        /** @var User $user */
-        $user = $this->user();
-
+        // Chỉ map dữ liệu nhập; userId do Controller lấy từ user đã xác thực.
         return new CreateOrderData(
-            userId: $user->id,
             total: $this->float('total'),
             currency: $this->string('currency')->upper()->toString(),
         );

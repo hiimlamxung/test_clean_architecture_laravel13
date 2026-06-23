@@ -5,17 +5,23 @@ declare(strict_types=1);
 namespace App\Repositories;
 
 use App\Contracts\Repositories\PaymentRepository;
+use App\DTO\Payment\CreatePaymentData;
 use App\Enums\PaymentMethod;
 use App\Models\Payment;
 
 final readonly class EloquentPaymentRepository implements PaymentRepository
 {
-    /**
-     * @param  array<string, mixed>  $attributes
-     */
-    public function create(array $attributes): Payment
+    public function create(CreatePaymentData $data): Payment
     {
-        return Payment::query()->create($attributes);
+        return Payment::query()->create([
+            'order_id' => $data->orderId,
+            'method' => $data->method,
+            'status' => $data->status,
+            'amount' => $data->amount,
+            'currency' => $data->currency,
+            'gateway_reference' => $data->gatewayReference,
+            'gateway_payload' => $data->gatewayPayload,
+        ]);
     }
 
     public function findByMethodAndReference(PaymentMethod $method, string $reference): ?Payment

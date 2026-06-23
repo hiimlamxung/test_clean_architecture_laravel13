@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateOrderRequest;
 use App\Http\Resources\OrderResource;
 use App\Models\Order;
+use App\Models\User;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Auth\Access\Gate;
 
@@ -18,7 +19,10 @@ final class OrderController extends Controller
 
     public function store(CreateOrderRequest $request, CreateOrderAction $action): OrderResource
     {
-        return new OrderResource($action->handle($request->toData()));
+        /** @var User $user */
+        $user = $request->user();
+
+        return new OrderResource($action->handle($user, $request->toData()));
     }
 
     /**

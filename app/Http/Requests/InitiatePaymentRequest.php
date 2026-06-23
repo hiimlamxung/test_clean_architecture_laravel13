@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Requests;
 
-use App\Contracts\Repositories\OrderRepository;
 use App\Enums\PaymentMethod;
-use App\Models\Order;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -35,8 +33,8 @@ final class InitiatePaymentRequest extends FormRequest
         return PaymentMethod::from($this->string('method')->toString());
     }
 
-    public function order(OrderRepository $orders): Order
+    public function orderId(): int
     {
-        return $orders->findOrFail($this->integer('order_id'));
+        return $this->integer('order_id');
     }
 }

@@ -1,0 +1,108 @@
+deptrac:
+  paths:
+    - ./app
+  layers:
+    - name: Controller
+      collectors:
+        - type: classNameRegex
+          value: '#^App\\Http\\Controllers\\.*#'
+    - name: Request
+      collectors:
+        - type: classNameRegex
+          value: '#^App\\Http\\Requests\\.*#'
+    - name: Resource
+      collectors:
+        - type: classNameRegex
+          value: '#^App\\Http\\Resources\\.*#'
+    - name: Action
+      collectors:
+        - type: classNameRegex
+          value: '#^App\\Actions\\.*#'
+    - name: Service
+      collectors:
+        - type: classNameRegex
+          value: '#^App\\Services\\.*#'
+    - name: Repository
+      collectors:
+        - type: classNameRegex
+          value: '#^App\\(Repositories|Contracts\\Repositories)\\.*#'
+    - name: Model
+      collectors:
+        - type: classNameRegex
+          value: '#^App\\Models\\.*#'
+    - name: DTO
+      collectors:
+        - type: classNameRegex
+          value: '#^App\\DTO\\.*#'
+    - name: Enum
+      collectors:
+        - type: classNameRegex
+          value: '#^App\\Enums\\.*#'
+    - name: Policy
+      collectors:
+        - type: classNameRegex
+          value: '#^App\\Policies\\.*#'
+    - name: Exception
+      collectors:
+        - type: classNameRegex
+          value: '#^App\\Exceptions\\.*#'
+    - name: GatewayContract
+      collectors:
+        - type: classNameRegex
+          value: '#^App\\Contracts\\Payment\\.*#'
+    - name: Provider
+      collectors:
+        - type: classNameRegex
+          value: '#^App\\Providers\\.*#'
+  ruleset:
+    Controller:
+      - Request
+      - Resource
+      - Action
+      - Service
+      - DTO
+      - Enum
+      - Model
+      - Policy
+      - Exception
+    Request:
+      - DTO
+      - Enum
+    Resource:
+      - Model
+      - DTO
+      - Enum
+    Action:
+      - Service
+      - DTO
+      - Enum
+      - Model
+    Service:
+      - Repository
+      - DTO
+      - Enum
+      - Model
+      - GatewayContract
+      - Exception
+    Repository:
+      - Model
+      - DTO
+      - Enum
+    DTO:
+      - Enum
+      - Model
+    Model:
+      - Enum
+    Policy:
+      - Model
+    Exception:
+      - Enum
+    GatewayContract:
+      - DTO
+      - Enum
+      - Exception
+    Provider:
+      - Service
+      - Repository
+      - GatewayContract
+      - Enum

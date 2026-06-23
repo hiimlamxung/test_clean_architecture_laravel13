@@ -5,16 +5,14 @@ declare(strict_types=1);
 namespace App\Actions\Auth;
 
 use App\Models\User;
-use Laravel\Sanctum\PersonalAccessToken;
+use App\Services\Auth\AuthService;
 
 final readonly class LogoutAction
 {
+    public function __construct(private AuthService $service) {}
+
     public function handle(User $user): void
     {
-        $token = $user->currentAccessToken();
-
-        if ($token instanceof PersonalAccessToken) {
-            $token->delete();
-        }
+        $this->service->logout($user);
     }
 }

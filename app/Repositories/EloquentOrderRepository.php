@@ -8,13 +8,14 @@ use App\Contracts\Repositories\OrderRepository;
 use App\DTO\Order\CreateOrderData;
 use App\Enums\OrderStatus;
 use App\Models\Order;
+use App\Models\User;
 
 final readonly class EloquentOrderRepository implements OrderRepository
 {
-    public function create(CreateOrderData $data): Order
+    public function create(User $user, CreateOrderData $data): Order
     {
-        return Order::query()->create([
-            'user_id' => $data->userId,
+        // Tạo order qua quan hệ của user hiện tại → tự gắn user_id
+        return $user->orders()->create([
             'total' => $data->total,
             'currency' => $data->currency,
             'status' => OrderStatus::Pending,

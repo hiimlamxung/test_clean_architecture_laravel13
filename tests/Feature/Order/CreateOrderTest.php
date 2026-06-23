@@ -15,7 +15,8 @@ final class CreateOrderTest extends TestCase
 
     public function test_authenticated_user_can_create_order(): void
     {
-        Sanctum::actingAs(User::factory()->create());
+        $user = User::factory()->create();
+        Sanctum::actingAs($user);
 
         $this->postJson('/api/orders', [
             'total' => 250000,
@@ -25,6 +26,8 @@ final class CreateOrderTest extends TestCase
             ->assertJsonPath('data.status', 'Pending');
 
         $this->assertDatabaseCount('orders', 1);
+        // Tạo đơn thành công phải tăng counter của user
+        $this->assertDatabaseHas('users', ['id' => $user->id, 'total_orders' => 1]);
     }
 
     public function test_unauthenticated_user_cannot_create_order(): void

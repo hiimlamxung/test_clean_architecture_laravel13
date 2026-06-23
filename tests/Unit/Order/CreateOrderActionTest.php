@@ -15,12 +15,14 @@ final class CreateOrderActionTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_creates_order_with_pending_status(): void
+    public function test_delegates_to_service_and_creates_order(): void
     {
         $user = User::factory()->create();
 
-        $order = (new CreateOrderAction)->handle(new CreateOrderData(
-            userId: $user->id,
+        // Action giờ chỉ uỷ quyền cho OrderService → resolve qua container để có DI thật.
+        $action = $this->app->make(CreateOrderAction::class);
+
+        $order = $action->handle($user, new CreateOrderData(
             total: 250000.0,
             currency: 'VND',
         ));

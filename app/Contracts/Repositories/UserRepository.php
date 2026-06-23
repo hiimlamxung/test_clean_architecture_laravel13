@@ -9,4 +9,6 @@ use App\Models\User;
 interface UserRepository
 {
     public function findByEmail(string $email): ?User;
+
+    public function incrementTotalOrders(int $userId): void;
 }
